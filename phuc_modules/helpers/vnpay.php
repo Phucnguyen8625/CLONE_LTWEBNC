@@ -23,10 +23,11 @@ function vnpayVerifyResponse(array $input): bool
         return false;
     }
 
-    $receivedHash = $input['vnp_SecureHash'];
+    $receivedHash = (string) $input['vnp_SecureHash'];
     unset($input['vnp_SecureHash'], $input['vnp_SecureHashType']);
 
     ksort($input);
+
     $hashData = [];
     foreach ($input as $key => $value) {
         $hashData[] = urlencode((string) $key) . '=' . urlencode((string) $value);
@@ -37,26 +38,26 @@ function vnpayVerifyResponse(array $input): bool
     return hash_equals($calculated, $receivedHash);
 }
 
-function createVnpayPaymentUrl(array $order, array $payment): string
+function createVnpayPaymentUrl(array $order, array $payment, ?string $bankCode = null): string
 {
     $params = [
         'vnp_Version' => '2.1.0',
         'vnp_Command' => 'pay',
         'vnp_TmnCode' => VNPAY_TMN_CODE,
         'vnp_Amount' => (int) round(((float) $order['total_amount']) * 100),
-        'vnp_CreateDate' => $payment['vnp_create_date'],
+        'vnp_CreateDate' => (string) $payment['vnp_create_date'],
         'vnp_CurrCode' => 'VND',
         'vnp_IpAddr' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1',
         'vnp_Locale' => 'vn',
         'vnp_OrderInfo' => 'Thanh toan don hang #' . $order['id'],
         'vnp_OrderType' => 'other',
         'vnp_ReturnUrl' => VNPAY_RETURN_URL,
-        'vnp_TxnRef' => $payment['transaction_code'],
+        'vnp_TxnRef' => (string) $payment['transaction_code'],
         'vnp_ExpireDate' => date('YmdHis', strtotime('+15 minutes')),
     ];
 
-    if (!empty($_POST['bank_code'])) {
-        $params['vnp_BankCode'] = $_POST['bank_code'];
+    if ($bankCode !== null && $bankCode !== '') {
+        $params['vnp_BankCode'] = $bankCode;
     }
 
     return VNPAY_PAY_URL . '?' . vnpayBuildSignedQuery($params);
@@ -65,14 +66,15 @@ function createVnpayPaymentUrl(array $order, array $payment): string
 function queryVnpayTransaction(array $payment): array
 {
     $requestId = uniqid('query_', true);
+
     $payload = [
         'vnp_RequestId' => substr(str_replace('.', '', $requestId), 0, 32),
         'vnp_Version' => '2.1.0',
         'vnp_Command' => 'querydr',
         'vnp_TmnCode' => VNPAY_TMN_CODE,
-        'vnp_TxnRef' => $payment['transaction_code'],
+        'vnp_TxnRef' => (string) $payment['transaction_code'],
         'vnp_OrderInfo' => 'Truy van giao dich don hang #' . $payment['order_id'],
-        'vnp_TransactionDate' => $payment['vnp_create_date'],
+        'vnp_TransactionDate' => (string) $payment['vnp_create_date'],
         'vnp_CreateDate' => date('YmdHis'),
         'vnp_IpAddr' => $_SERVER['SERVER_ADDR'] ?? '127.0.0.1',
     ];
@@ -109,6 +111,8 @@ function queryVnpayTransaction(array $payment): array
         return [
             'ok' => false,
             'message' => 'Không gọi được API truy vấn VNPAY: ' . $error,
+            'data' => null,
+            'raw' => null,
         ];
     }
 
