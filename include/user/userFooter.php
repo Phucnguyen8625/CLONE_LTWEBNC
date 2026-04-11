@@ -1,4 +1,5 @@
-<?php require_once __DIR__ . '/../../config/WebConfig.php'; ?>
+<?php require_once __DIR__ . '/../../config/webConfig.php'; ?>
+>>>>>>> feature/login
 
 <footer class="bg-orange-50 border-t border-orange-100 px-6 py-10">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-8">
@@ -29,3 +30,4 @@
 
 </body>
 </html>
+>>>>>>> feature/login
