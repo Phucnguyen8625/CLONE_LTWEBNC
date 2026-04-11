@@ -1,6 +1,0 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const titleInput = document.getElementById('title');
-    if (titleInput) {
-        titleInput.focus();
-    }
-});
