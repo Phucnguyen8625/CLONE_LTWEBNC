@@ -6,8 +6,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Vì project của bạn đang chạy kiểu:
-// http://localhost:8080/admin/Login.php
-// nên BASE_URL phải để rỗng
+// http://localhost:8080/admin/login.php
+// nên BASE_URL có thể để rỗng
 if (!defined('BASE_URL')) {
     define('BASE_URL', '');
 }
@@ -51,7 +51,7 @@ function adminLogout(): void
 function requireAdminLogin(): void
 {
     if (!isAdminLoggedIn()) {
-        header('Location: ' . ADMIN_URL . '/Login.php');
+        header('Location: ' . ADMIN_URL . '/login.php');
         exit;
     }
 }
