@@ -1,28 +1,56 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Đặt hàng thành công</title>
-    <style>
-        body { font-family: 'Inter', sans-serif; background: #f4f7f6; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .success-card { background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; max-width: 500px; width: 100%; }
-        .success-icon { font-size: 60px; color: #28a745; margin-bottom: 20px; }
-        h1 { margin-top: 0; color: #333; }
-        p { color: #666; line-height: 1.5; }
-        .btn-home { display: inline-block; margin-top: 20px; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; }
-    </style>
-</head>
-<body>
-    <div class="success-card">
-        <div class="success-icon">✓</div>
-        <h1>Đặt hàng thành công!</h1>
-        <p>Cảm ơn bạn đã mua hàng. Đơn hàng <strong>#<?= htmlspecialchars($orderId) ?></strong> của bạn đã được ghi nhận.</p>
+<?php $pageTitle = 'Đặt hàng thành công'; ?>
+<?php require_once __DIR__ . '/../partials/header.php'; ?>
+
+<main class="max-w-4xl mx-auto my-16 px-4">
+    <div class="bg-white p-12 text-center shadow-xl rounded-2xl border border-gray-100">
+        <div class="w-24 h-24 mx-auto mb-8 bg-green-50 rounded-full flex items-center justify-center text-green-500 shadow-inner">
+            <i class="fas fa-check-circle text-5xl"></i>
+        </div>
+        
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-4 h-auto">Đặt hàng thành công!</h1>
+        <p class="text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">
+            Cảm ơn bạn đã tin tưởng MangaStore. Đơn hàng <strong class="text-primary font-bold italic">#<?php echo htmlspecialchars($orderId); ?></strong> của bạn đã được hệ thống ghi nhận và đang được xử lý.
+        </p>
+
         <?php if(isset($_GET['method']) && $_GET['method'] == 'vnpay_mock'): ?>
-            <p style="color: #17a2b8;">(Mô phỏng: Truy cập <a href="admin.php?controller=payment&action=index">Admin -> Khách hàng thanh toán VNPAY thành công</a>)</p>
+            <div class="mb-8 p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                <p class="text-sm text-blue-700">
+                    <i class="fas fa-info-circle mr-2"></i> <strong>(Mô phỏng)</strong> Đơn hàng đã được thanh toán qua VNPAY. Bạn có thể kiểm tra trạng thái trong 
+                    <a href="index.php?controller=userorder" class="underline font-bold">Lịch sử đơn hàng</a>.
+                </p>
+            </div>
         <?php else: ?>
-            <p>Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất để xác nhận đơn hàng.</p>
+            <div class="mb-8 p-6 bg-purple-50 rounded-xl inline-block max-w-sm">
+                <p class="text-sm text-primary font-medium">
+                    <i class="fas fa-phone-alt mr-2"></i> Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất qua số điện thoại đã cung cấp để xác nhận đơn hàng.
+                </p>
+            </div>
         <?php endif; ?>
-        <a href="index.php" class="btn-home">Tiếp tục mua sắm</a>
+
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+            <a href="index.php?controller=userorder" class="w-full sm:w-auto bg-primary hover:bg-purple-800 text-white font-bold py-3.5 px-8 rounded-xl transition shadow-lg flex items-center justify-center">
+                <i class="fas fa-shopping-bag mr-3"></i> XEM ĐƠN HÀNG
+            </a>
+            <a href="index.php" class="w-full sm:w-auto bg-white border border-gray-200 text-gray-600 hover:border-gray-400 font-bold py-3.5 px-8 rounded-xl transition flex items-center justify-center">
+                TIẾP TỤC MUA SẮM
+            </a>
+        </div>
+        
+        <div class="mt-12 pt-8 border-t border-gray-50 flex justify-center items-center gap-8">
+            <div class="text-center">
+                <i class="fas fa-truck text-2xl text-gray-200 mb-2"></i>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Giao hàng nhanh</p>
+            </div>
+            <div class="text-center">
+                <i class="fas fa-shield-alt text-2xl text-gray-200 mb-2"></i>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Bảo mật tuyệt đối</p>
+            </div>
+            <div class="text-center">
+                <i class="fas fa-headset text-2xl text-gray-200 mb-2"></i>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Hỗ trợ 24/7</p>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+</main>
+
+<?php require_once __DIR__ . '/../partials/footer.php'; ?>

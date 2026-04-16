@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS comics (
     author VARCHAR(150),
     price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     quantity INT NOT NULL DEFAULT 0,
-    image_url VARCHAR(255),
+    image_url TEXT,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -42,6 +42,19 @@ CREATE TABLE IF NOT EXISTS orders (
     address TEXT NOT NULL,
     total_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     status ENUM('pending', 'processing', 'completed', 'cancelled') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Bảng người dùng (Đăng nhập / Đăng ký)
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) NOT NULL,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL COMMENT 'Bcrypt hashed',
+    role ENUM('user', 'admin') DEFAULT 'user',
+    status ENUM('active', 'banned') DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

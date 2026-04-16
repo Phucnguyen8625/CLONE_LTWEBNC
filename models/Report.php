@@ -47,6 +47,16 @@ class Report {
         $stmt = $this->conn->prepare("SELECT SUM(total_amount) as total FROM orders WHERE status = 'completed'");
         $stmt->execute();
         $stats['total_revenue'] = $stmt->fetchColumn() ?: 0;
+
+        // Total users
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM users");
+        $stmt->execute();
+        $stats['total_users'] = $stmt->fetchColumn();
+
+        // Total comics
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM comics");
+        $stmt->execute();
+        $stats['total_comics'] = $stmt->fetchColumn();
         
         return $stats;
     }

@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../models/Order.php';
 require_once __DIR__ . '/../models/Payment.php';
 require_once __DIR__ . '/../models/Comic.php';
+require_once __DIR__ . '/../models/Category.php';
 require_once __DIR__ . '/../config/database.php';
 
 class CheckoutController {
@@ -39,6 +40,13 @@ class CheckoutController {
                 $totalAmount += $comicModel->price * $quantity;
             }
         }
+        // Load categories for nav
+        $categoryModel = new Category($db);
+        $categories = $categoryModel->getAllActive();
+
+        // Get user session for pre-filling
+        $currentUser = isset($_SESSION['user_login']) ? $_SESSION['user_login'] : null;
+
         require_once __DIR__ . '/../views/user/checkout/index.php';
     }
 
@@ -97,6 +105,12 @@ class CheckoutController {
 
     public function success() {
         $orderId = isset($_GET['order_id']) ? $_GET['order_id'] : '';
+        
+        $database = new Database();
+        $db = $database->getConnection();
+        $categoryModel = new Category($db);
+        $categories = $categoryModel->getAllActive();
+
         require_once __DIR__ . '/../views/user/checkout/success.php';
     }
 }

@@ -1,69 +1,79 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Quản lý thanh toán</title>
-    <style>
-        body { font-family: 'Inter', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f8f9fa; font-weight: 600; }
-        select, button { padding: 6px; border-radius: 4px; border: 1px solid #ccc; }
-        button { background: #007bff; color: white; cursor: pointer; border: none; }
-        .back-link { margin-bottom: 20px; display: inline-block; color: #007bff; text-decoration: none; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <a href="admin.php" class="back-link">← Quay lại Dashboard</a>
-        <h1>Quản lý thanh toán</h1>
-        <?php if(isset($_GET['success'])): ?>
-            <p style="color: green;"><?= htmlspecialchars($_GET['success']) ?></p>
-        <?php endif; ?>
-        <?php if(isset($_GET['error'])): ?>
-            <p style="color: red;"><?= htmlspecialchars($_GET['error']) ?></p>
-        <?php endif; ?>
-        <table>
-            <thead>
+<?php $pageTitle = 'Quản lý thanh toán'; ?>
+<?php require_once __DIR__ . '/../partials/header.php'; ?>
+<?php require_once __DIR__ . '/../partials/sidebar.php'; ?>
+
+<!-- Content Header -->
+<div class="flex justify-between items-center mb-8">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800">Quản lý thanh toán</h1>
+        <p class="text-sm text-slate-500">Đối soát giao dịch, xác nhận thanh toán thành công hoặc thất bại.</p>
+    </div>
+</div>
+
+<!-- Payments Table -->
+<div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left">
+            <thead class="bg-slate-50 border-b border-slate-100 text-slate-500 text-[10px] uppercase font-bold tracking-widest">
                 <tr>
-                    <th>Mã GD</th>
-                    <th>Mã ĐH</th>
-                    <th>Khách hàng</th>
-                    <th>Phương thức</th>
-                    <th>Số tiền</th>
-                    <th>Cập nhật trạng thái</th>
-                    <th>Ngày tạo</th>
+                    <th class="px-8 py-4">Mã GD</th>
+                    <th class="px-6 py-4">Đơn hàng</th>
+                    <th class="px-6 py-4">Khách hàng</th>
+                    <th class="px-6 py-4">Phương thức</th>
+                    <th class="px-6 py-4">Số tiền</th>
+                    <th class="px-6 py-4">Cập nhật Trạng thái</th>
+                    <th class="px-8 py-4 text-center">Ngày tạo</th>
                 </tr>
             </thead>
-            <tbody>
-                <?php foreach($payments as $p): ?>
-                <tr>
-                    <td><?= $p['id'] ?></td>
-                    <td>#<?= $p['order_id'] ?></td>
-                    <td><?= htmlspecialchars($p['customer_name']) ?></td>
-                    <td><strong style="text-transform: uppercase;"><?= htmlspecialchars($p['payment_method']) ?></strong></td>
-                    <td><?= number_format($p['amount'], 0, ',', '.') ?> đ</td>
-                    <td>
-                        <form action="admin.php?controller=payment&action=updateStatus" method="POST" style="display:flex; gap: 5px;">
-                            <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                            <select name="status">
-                                <option value="pending" <?= $p['payment_status'] == 'pending' ? 'selected' : '' ?>>Pending</option>
-                                <option value="success" <?= $p['payment_status'] == 'success' ? 'selected' : '' ?>>Success</option>
-                                <option value="failed" <?= $p['payment_status'] == 'failed' ? 'selected' : '' ?>>Failed</option>
-                            </select>
-                            <button type="submit">Lưu</button>
-                        </form>
-                    </td>
-                    <td><?= $p['created_at'] ?></td>
-                </tr>
-                <?php endforeach; ?>
+            <tbody class="divide-y divide-slate-100 text-sm">
                 <?php if(empty($payments)): ?>
-                <tr><td colspan="7" style="text-align: center;">Chưa có giao dịch nào</td></tr>
+                    <tr>
+                        <td colspan="7" class="px-8 py-12 text-center text-slate-400 italic">Chưa có giao dịch thanh toán nào được ghi nhận.</td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach($payments as $p): ?>
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-8 py-5 font-bold text-slate-400">#<?php echo $p['id']; ?></td>
+                        <td class="px-6 py-5">
+                            <a href="admin.php?controller=order&action=show&id=<?php echo $p['order_id']; ?>" class="text-indigo-600 font-bold hover:underline italic">ĐH #<?php echo $p['order_id']; ?></a>
+                        </td>
+                        <td class="px-6 py-5 font-bold text-slate-800">
+                            <?php echo htmlspecialchars($p['customer_name']); ?>
+                        </td>
+                        <td class="px-6 py-5 uppercase font-black text-[10px] tracking-widest text-slate-500">
+                            <?php 
+                                $methods = [
+                                    'cod' => 'Tiền mặt (COD)',
+                                    'vnpay' => 'VNPay Online'
+                                ];
+                                echo $methods[strtolower($p['payment_method'])] ?? $p['payment_method']; 
+                            ?>
+                        </td>
+                        <td class="px-6 py-5 font-black text-slate-800">
+                            <?php echo number_format($p['amount'], 0, ',', '.'); ?>đ
+                        </td>
+                        <td class="px-6 py-5">
+                            <form action="admin.php?controller=payment&action=updateStatus" method="POST" class="flex items-center space-x-2">
+                                <input type="hidden" name="id" value="<?php echo $p['id']; ?>">
+                                <select name="status" class="bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-bold uppercase tracking-tighter px-2 py-1 focus:outline-none focus:border-accent">
+                                    <option value="pending" <?php echo $p['payment_status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
+                                    <option value="success" <?php echo $p['payment_status'] == 'success' ? 'selected' : ''; ?>>Success</option>
+                                    <option value="failed" <?php echo $p['payment_status'] == 'failed' ? 'selected' : ''; ?>>Failed</option>
+                                </select>
+                                <button type="submit" class="bg-slate-800 text-white p-1.5 rounded-lg hover:bg-slate-900 transition shadow-sm" title="Lưu">
+                                    <i class="fas fa-save text-[10px]"></i>
+                                </button>
+                            </form>
+                        </td>
+                        <td class="px-8 py-5 text-center text-xs text-slate-400">
+                            <?php echo date('d/m/Y H:i', strtotime($p['created_at'])); ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>
         </table>
     </div>
-</body>
-</html>
+</div>
+
+<?php require_once __DIR__ . '/../partials/footer.php'; ?>
