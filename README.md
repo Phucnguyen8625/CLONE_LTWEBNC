@@ -16,37 +16,26 @@
 - [Quản lý đơn hàng của người dùng](docs/srs/quan_ly_don_hang_cua_nguoi_dung.md)
 - [Cập nhật thông tin cá nhân](docs/srs/cap_nhat_thong_tin_ca_nhan.md)
 
-## 1. Thông tin đề tài BCCĐ
-Tên hệ thống: MangaStore - Website bán và đọc truyện tranh online  
-Nhóm thực hiện: Nguyễn Huy Phúc, Nguyễn Duy Khánh, Nguyễn Dương Thế Bảo
+---
 
-## 2. Phần sinh viên cấu hình
-- Cấu hình database trong `config/`
-- Import file `database.sql`
-- Cấu hình đường dẫn host trong `.htaccess`
-- Cấu hình chức năng thanh toán trong `phuc_modules/checkout`
+## Báo cáo chuyên đề: Xây dựng Website bán truyện tranh
 
-## 3. Quản lý phiên bản
-Dự án được quản lý bằng Git/GitHub:
-- Repository: https://github.com/Phucnguyen8625/BCCD_Lap_trinh_web_nang_cao_Nhom_2
-- Có lịch sử commit, phân chia thư mục chức năng rõ ràng.
+Dự án này đã được tối ưu để đáp ứng các tiêu chuẩn của báo cáo chuyên đề **Phần mềm mã nguồn mở** và **Lập trình web nâng cao**.
 
-## 4. Tùy biến skin
-Giao diện được tùy biến trong thư mục:
-- `assets/css`
-- `views`
-- `public`
+### 1. Tùy biến Skin (Dark Mode)
+Giao diện người dùng được trang bị tính năng chuyển đổi **Light/Dark Mode** (nút bấm ở góc phải Header). 
+Tính năng này tự động lưu trạng thái vào `localStorage` và ghi đè CSS Variables bằng class `.dark` của Tailwind CSS, minh chứng cho khả năng tùy biến giao diện linh hoạt.
 
-## 5. Lập trình tùy biến chức năng / plugin
-Dự án có các module tùy biến:
-- Module quản trị Admin
-- Module thanh toán trong `phuc_modules/checkout`
-- Module quản lý truyện, danh mục, đơn hàng, người dùng
+### 2. Kiến trúc Plugin/Module
+Toàn bộ nghiệp vụ Admin (Orders, Payments, Reports) được gói gọn trong thư mục `phuc_modules`. Đây là kiến trúc cho phép dễ dàng cắm (plug) hoặc tháo (unplug) các tính năng nghiệp vụ mà không ảnh hưởng sâu đến core của hệ thống.
 
-## 6. Cơ sở dữ liệu
-Dự án sử dụng MySQL, file CSDL nằm tại:
-- `database.sql`
-- `seed.sql`
+### 3. Môi trường Ảo hóa (Docker)
+Dự án cung cấp sẵn cấu hình `docker-compose.yml` và `Dockerfile` để triển khai nhanh chóng trên môi trường ảo hóa:
+```bash
+# Chạy dự án với Docker
+docker-compose up -d
+```
+Ứng dụng sẽ tự động khởi tạo PHP/Apache trên cổng `8080` và kết nối với cơ sở dữ liệu MySQL chạy nền. Truy cập vào `http://localhost:8080`.
 
-## 7. Deploy
-Link website đã deploy: https://pkbcomic.io.vn
+### 4. License
+Dự án được phân phối dưới giấy phép **MIT License** (xem file `LICENSE`), cho phép sử dụng, sửa đổi và phân phối tự do.
